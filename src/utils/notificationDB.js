@@ -1,0 +1,51 @@
+export default [
+  {
+    id: 0,
+    title: 'notification title 0',
+    text: 'A notification is a message that Android displays outside your app\'s UI to provide the user with reminders, communication from other people, or other timely ...',
+    url: 'url-string',
+    isRead: false,
+  },
+  {
+    id: 1,
+    title: 'notification title 1',
+    text: 'notification text 1',
+    url: 'url-string',
+    isRead: true,
+  },
+  {
+    id: 2,
+    title: 'notification title 2',
+    text: 'notification text 2',
+    url: 'url-string',
+    isRead: false,
+  },
+  {
+    id: 3,
+    title: 'notification title 3',
+    text: 'notification text 3',
+    url: 'url-string',
+    isRead: false,
+  },
+  {
+    id: 4,
+    title: 'notification title 4',
+    text: 'notification text 4',
+    url: 'url-string',
+    isRead: false,
+  },
+  {
+    id: 5,
+    title: 'notification title 5',
+    text: 'notification text 5',
+    url: 'url-string',
+    isRead: false,
+  },
+  {
+    id: 6,
+    title: 'notification title 6',
+    text: 'notification text 6',
+    url: 'url-string',
+    isRead: false,
+  },
+]
