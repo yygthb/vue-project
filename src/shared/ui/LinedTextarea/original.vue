@@ -19,7 +19,7 @@
     <textarea
       class="lined-textarea__content"
       :class="{
-        'lined-textarea__content--nowrap': nowrap,
+        // 'lined-textarea__content--nowrap': nowrap,
       }"
       v-model="content"
       v-on:scroll="scrollLines"
@@ -51,7 +51,7 @@ export default {
   props: {
     nowrap: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     styles: {
       type: Object,
@@ -81,6 +81,7 @@ export default {
       return lineNumbers;
     },
     lines() {
+      console.log('lines computed', this.numPerLine);
       if (this.content === "") return [1];
       const lineNumbers = [];
       let num = 1;
@@ -138,6 +139,7 @@ export default {
       }
     },
     nowrap() {
+      console.log('no wrap watch');
       this.calculateCharactersPerLine();
     },
     value(val) {
@@ -148,7 +150,6 @@ export default {
   },
   methods: {
     calculateCharactersPerLine() {
-      // May be +-1 off real value >_<
       if (this.nowrap) {
         this.numPerLine = Number.MAX_SAFE_INTEGER;
         return;
