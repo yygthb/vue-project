@@ -10,7 +10,6 @@ export default {
   data() {
     return {
       id: null,
-      isMounted: false,
       linesCount: [1],
       scrolledLength: 0,
     };
@@ -18,8 +17,6 @@ export default {
 
   mounted() {
     this.id = this.$.uid;
-    this.isMounted = true;
-    // this.syncScroll(); // ???
     this.calculateLinesCount();
   },
 
@@ -29,14 +26,21 @@ export default {
     },
   },
 
+  created() {
+    window.addEventListener("resize", this.screenWidthHandler);
+  },
+
+  destroyed() {
+    window.removeEventListener("resize", this.screenWidthHandler);
+  },
+
   methods: {
     inputHandler(event) {
       this.$emit("update:modelValue", event.target.value);
+      this.calculateLinesCount();
     },
 
     calculateLinesCount() {
-      if (!this.isMounted) return;
-
       if (this.modelValue === "") {
         this.linesCount = [1];
         return;
@@ -92,12 +96,16 @@ export default {
 
     onScroll(e) {
       this.scrolledLength = e.target.scrollTop;
-      this.syncScroll();
+      this.syncLinesScroll();
     },
 
-    syncScroll() {
+    syncLinesScroll() {
       this.$refs.lines.style.transform = `translateY(${-this
         .scrolledLength}px)`;
+    },
+
+    screenWidthHandler() {
+      this.calculateLinesCount();
     },
   },
 };
@@ -105,9 +113,6 @@ export default {
 
 <template>
   <textarea class="bufer" ref="bufer" rows="1"></textarea>
-  <br />
-  <br />
-
   <div class="textarea-container">
     <div class="textarea-lines-count">
       <div class="lines-container" ref="lines">
@@ -125,9 +130,6 @@ export default {
       ref="textarea"
     ></textarea>
   </div>
-
-  <br />
-  <button @click="log">LOG</button>
 </template>
 
 <style lang="scss" scoped>
@@ -166,6 +168,12 @@ $border-radius: 5px;
   line-height: 150%;
   outline: none;
   font-family: monospace;
+  resize: vertical;
+}
+
+.bufer {
+  visibility: hidden;
+  position: absolute;
 }
 
 .app-textarea {

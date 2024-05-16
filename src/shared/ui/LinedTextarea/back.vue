@@ -11,8 +11,7 @@ export default {
     return {
       id: null,
       isMounted: false,
-      widthPerChar: 8,
-      numPerLine: 1,
+      linesCount: [1],
       scrolledLength: 0,
     };
   },
@@ -20,14 +19,27 @@ export default {
   mounted() {
     this.id = this.$.uid;
     this.isMounted = true;
-    // this.syncScroll(); // ???
+    this.calculateLinesCount();
   },
 
-  computed: {
-    linesCount() {
+  watch: {
+    modelValue() {
+      this.calculateLinesCount();
+    },
+  },
+
+  methods: {
+    inputHandler(event) {
+      this.$emit("update:modelValue", event.target.value);
+    },
+
+    calculateLinesCount() {
       if (!this.isMounted) return;
 
-      if (this.modelValue === "") return [1];
+      if (this.modelValue === "") {
+        this.linesCount = [1];
+        return;
+      }
 
       const resultLines = [];
       const lines = this.modelValue.split("\n");
@@ -39,19 +51,7 @@ export default {
         }
       });
 
-      return resultLines;
-    },
-  },
-
-  // watch: {
-  //   modelValue() {
-  //     console.log("modelValue watch");
-  //   },
-  // },
-
-  methods: {
-    inputHandler(event) {
-      this.$emit("update:modelValue", event.target.value);
+      this.linesCount = resultLines;
     },
 
     calculateStringLines(str) {
@@ -72,22 +72,21 @@ export default {
     },
 
     onMouseDown() {
-      // const textarea = this.$refs.textarea;
-      // console.log("textarea:", textarea);
-      // const { clientWidth: w, clientHeight: h } = textarea;
-      // const detect = () => {
-      //   const { clientWidth: newW, clientHeight: newH } = textarea;
-      //   if ((newW !== w) & (newH !== h)) {
-      //     this.getCharsCountPerLine();
-      //   }
-      // };
-      // const stop = () => {
-      //   this.getCharsCountPerLine();
-      //   document.removeEventListener("mousemove", detect);
-      //   document.removeEventListener("mouseup", stop);
-      // };
-      // document.addEventListener("mousemove", detect);
-      // document.addEventListener("mouseup", stop);
+      const textarea = this.$refs.textarea;
+      const { clientWidth: w, clientHeight: h } = textarea;
+      const detect = () => {
+        const { clientWidth: newW, clientHeight: newH } = textarea;
+        if ((newW !== w) & (newH !== h)) {
+          this.calculateLinesCount();
+        }
+      };
+      const stop = () => {
+        this.calculateLinesCount();
+        document.removeEventListener("mousemove", detect);
+        document.removeEventListener("mouseup", stop);
+      };
+      document.addEventListener("mousemove", detect);
+      document.addEventListener("mouseup", stop);
     },
 
     onScroll(e) {
@@ -98,10 +97,6 @@ export default {
     syncScroll() {
       this.$refs.lines.style.transform = `translateY(${-this
         .scrolledLength}px)`;
-    },
-
-    log() {
-      console.log(this.modelValue);
     },
   },
 };

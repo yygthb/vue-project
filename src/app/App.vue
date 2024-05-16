@@ -12,7 +12,7 @@ export default {
 
   data() {
     return {
-      text: "str1\nTo use it, simply create a new instance of `ResizeObserver` and call the `observe()` meth o p ss\n3",
+      text: "str1\nTo use it, simply create a new instance of `ResizeObserver` and call the `observe()` meth o p s t u v w x y z\nTo use it, simply create a new instance of `ResizeObserver` and call the `observe()` meth o p s t u\nq\nw\ne\nr\nt\ny",
     };
   },
 };
@@ -25,12 +25,12 @@ export default {
     <main class="main">
       <div class="container">
         <h1>MAIN PAGE</h1>
-
         <br />
+
         <p>lined textarea</p>
         <LinedTextarea v-model="text" />
         <br />
-        <br />
+
         <p>{{ text }}</p>
         <br />
         <p>textarea content:</p>
