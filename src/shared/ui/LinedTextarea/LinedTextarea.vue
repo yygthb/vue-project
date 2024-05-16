@@ -1,9 +1,27 @@
 <script>
+import AppInput from "../AppInput/AppInput.vue";
+
 export default {
+  components: {
+    AppInput,
+  },
+
   props: {
     modelValue: {
       type: String,
       default: "",
+    },
+    label: {
+      type: String,
+      required: false,
+    },
+    tip: {
+      type: String,
+      required: false,
+    },
+    showAssistInput: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -12,6 +30,7 @@ export default {
       id: null,
       linesCount: [1],
       scrolledLength: 0,
+      assistInputValue: "Q",
     };
   },
 
@@ -107,42 +126,99 @@ export default {
     screenWidthHandler() {
       this.calculateLinesCount();
     },
+
+    assistInputEnterHandler() {
+      if (this.assistInputValue) {
+        const content = this.modelValue
+          .split("\n")
+          .map((line) => line + this.assistInputValue);
+
+        this.$emit("update:modelValue", content.join("\n"));
+      }
+    },
   },
 };
 </script>
 
 <template>
-  <textarea class="bufer" ref="bufer" rows="1"></textarea>
-  <div class="textarea-container">
-    <div class="textarea-lines-count">
-      <div class="lines-container" ref="lines">
-        <p v-for="(line, index) in linesCount" :key="index" v-html="line"></p>
-      </div>
+  <div class="app-textarea">
+    <textarea class="app-textarea__bufer" ref="bufer" rows="1"></textarea>
+    <div class="app-textarea__header">
+      <label
+        v-if="label"
+        :for="id"
+        v-text="label"
+        class="app-textarea__label"
+      ></label>
+      <AppInput
+        v-if="showAssistInput"
+        class="app-textarea__assist-input"
+        :label="'Add value to the end'"
+        v-model="assistInputValue"
+        @onEnter="assistInputEnterHandler"
+      />
     </div>
-    <textarea
-      :id="id"
-      rows="5"
-      class="form-control app-textarea"
-      :value="modelValue"
-      @input="inputHandler"
-      v-on:mousedown="onMouseDown"
-      v-on:scroll="onScroll"
-      ref="textarea"
-    ></textarea>
+    <div class="app-textarea__container">
+      <div class="app-textarea__lines">
+        <div class="lines-container" ref="lines">
+          <p v-for="(line, index) in linesCount" :key="index" v-html="line"></p>
+        </div>
+      </div>
+      <textarea
+        :id="id"
+        rows="5"
+        class="form-control app-textarea__content"
+        :value="modelValue"
+        @input="inputHandler"
+        v-on:mousedown="onMouseDown"
+        v-on:scroll="onScroll"
+        ref="textarea"
+      ></textarea>
+    </div>
+    <small v-if="tip" class="tip" v-text="tip"></small>
   </div>
 </template>
 
 <style lang="scss" scoped>
 $border-radius: 5px;
 
-.textarea-container {
+.app-textarea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+
+  .app-textarea__label {
+    margin-bottom: 0.25em;
+  }
+
+  .tip {
+    display: block;
+    margin-top: 0.25em;
+    color: gray;
+  }
+
+  .app-textarea__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .app-textarea__assist-input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.app-textarea__container {
   display: grid;
   grid-template-columns: 30px 1fr;
   font-size: 13px;
   line-height: 150%;
 }
 
-.textarea-lines-count {
+.app-textarea__lines {
   position: relative;
   overflow: hidden;
   padding: 6px 5px;
@@ -157,8 +233,8 @@ $border-radius: 5px;
   }
 }
 
-.bufer,
-.app-textarea {
+.app-textarea__bufer,
+.app-textarea__content {
   padding: 5px;
   border: 1px solid lightgray;
   border-left: none;
@@ -171,28 +247,8 @@ $border-radius: 5px;
   resize: vertical;
 }
 
-.bufer {
+.app-textarea__bufer {
   visibility: hidden;
   position: absolute;
-}
-
-.app-textarea {
-  display: flex;
-  flex-direction: column;
-
-  .app-textarea__label {
-    margin-bottom: 0.25em;
-  }
-
-  .tip {
-    display: block;
-    margin-top: 0.25em;
-    color: gray;
-  }
-
-  textarea {
-    min-height: 38px;
-    height: 96px;
-  }
 }
 </style>
