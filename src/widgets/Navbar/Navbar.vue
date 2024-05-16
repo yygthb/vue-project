@@ -18,10 +18,10 @@ export default {
   <header class="header">
     <div class="container">
       <div class="header-container">
-        <div class="logo">LOGO</div>
+        <div class="logo">NAV</div>
 
         <div class="header__service-info">
-          <NotificationBar />
+          <!-- <NotificationBar /> -->
 
           <div class="user">USER INFO</div>
         </div>
