@@ -1,10 +1,10 @@
 <script setup>
-import Header from "./components/Header.vue";
+import Navbar from "@/widgets/Navbar/Navbar.vue";
 </script>
 
 <template>
   <div class="app">
-    <Header class="header" />
+    <Navbar class="header" />
 
     <main class="main">
       <div class="container">MAIN</div>

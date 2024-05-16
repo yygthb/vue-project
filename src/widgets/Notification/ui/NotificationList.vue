@@ -1,5 +1,5 @@
 <script>
-import NotificationItem from "./NotificationItem.vue";
+import NotificationItem from "@/entities/NotificationItem/NotificationItem.vue";
 
 export default {
   components: {

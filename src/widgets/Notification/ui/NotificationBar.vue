@@ -1,10 +1,10 @@
 <script>
-import { NotificaitonService } from "../utils/NotificationService.js";
-import Modal from "./Modal.vue";
-import NotificationList from "./Notification/NotificationList.vue";
+import { NotificaitonService } from "../service/NotificationService.js";
+import Modal from "@/shared/ui/Modal/Modal.vue";
+import NotificationList from "./NotificationList.vue";
 
 // set this value to 500 to see fast result
-const LOAD_NOTIFICATIONS_INTERVAL = 300_000; // default 300_000 (5 minutes)
+const LOAD_NOTIFICATIONS_INTERVAL = 10_000; // default 300_000 (5 minutes)
 
 export default {
   components: {
@@ -72,7 +72,7 @@ export default {
       <img
         alt="Notification logo"
         class="icon"
-        src="../assets/images/icons/bell.svg"
+        src="@/assets/images/icons/bell.svg"
       />
 
       <div v-if="unReadNotifications" class="notification-count">

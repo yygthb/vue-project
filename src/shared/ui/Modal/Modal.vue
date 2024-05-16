@@ -1,5 +1,7 @@
 <script>
 export default {
+  name: 'app-modal',
+
   props: {
     show: {
       type: Boolean,

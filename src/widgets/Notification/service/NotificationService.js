@@ -1,5 +1,5 @@
 import db from './notificationDB.js';
-import { getRandom } from '../helpers/random.js';
+import { getRandom } from '../../../shared/helpers/random.js';
 
 export class NotificaitonService {
   constructor() {
@@ -15,7 +15,7 @@ export class NotificaitonService {
 
   updateNotifications() {
     const randomNum = getRandom(0, 10);
-    if (randomNum > 8 && this.notificationsCount < 7) {
+    if (randomNum > 1 && this.notificationsCount < 7) {
       this.notifications.unshift(db[this.notificationsCount]);
       this.notificationsCount++;
     }

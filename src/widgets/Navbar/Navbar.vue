@@ -1,13 +1,9 @@
 <script>
-import Logo from './Logo.vue';
-import NotificationBar from './NotificationBar.vue';
-import User from './User.vue';
+import { NotificationBar } from '@/widgets/Notification';
 
 export default {
   components: {
-    Logo,
     NotificationBar,
-    User,
   },
 
   data() {
@@ -22,11 +18,12 @@ export default {
   <header class="header">
     <div class="container">
       <div class="header-container">
-        <Logo />
+        <div class="logo">LOGO</div>
 
         <div class="header__service-info">
           <NotificationBar />
-          <User class="user" />
+
+          <div class="user">USER INFO</div>
         </div>
       </div>
     </div>
