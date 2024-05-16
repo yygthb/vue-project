@@ -12,7 +12,9 @@ export default {
 
   data() {
     return {
-      text: "str1\nstr2\nstr3\nstr4\nstr5\nstr6\nstr7\nstr8\nstr9",
+      text: "str1\nTo use it, simply create a new instance of `ResizeObserver` and call the `observe()` meth o p q r s t u v w\nqwerty\nstr2\nstr3\nstr4\nstr5\nstr6\nstr7\nstr8\nstr9",
+      // text: "To use it, simply create a new instance of `ResizeObserver` and call the `observe()` metho\nqwerty",
+      // text: "To use it, simply create a new instance of `ResizeObserver` and call the `observe()` method, passing in the text area element as an argument. Then, in the observer's callback function, call your `calculateNumLines()` function again to recalculate the number of lines.",
     };
   },
 };

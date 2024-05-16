@@ -10,7 +10,7 @@ export default {
   data() {
     return {
       id: null,
-      content: "",
+      isMounted: false,
       widthPerChar: 8,
       numPerLine: 1,
       scrolledLength: 0,
@@ -19,56 +19,75 @@ export default {
 
   mounted() {
     this.id = this.$.uid;
-    // this.content = this.modelValue;
-    this.syncScroll(); // ???
+    this.isMounted = true;
+    // this.syncScroll(); // ???
   },
 
   computed: {
     linesCount() {
-      // console.log("lines computed, this.content: ", this.content);
-      if (this.modelValue === "") return 1;
+      if (!this.isMounted) return;
 
-      return this.modelValue.split("\n").length;
+      if (this.modelValue === "") return [1];
+
+      const resultLines = [];
+      const lines = this.modelValue.split("\n");
+      lines.forEach((line, idx) => {
+        resultLines.push(idx + 1);
+        const wrapCount = this.calculateStringLines(line) - 1;
+        for (let i = 0; i < wrapCount; i++) {
+          resultLines.push("&nbsp;");
+        }
+      });
+
+      return resultLines;
     },
   },
 
-  watch: {
-    modelValue() {
-      console.log('modelValue watch');
-    },
-  },
+  // watch: {
+  //   modelValue() {
+  //     console.log("modelValue watch");
+  //   },
+  // },
 
   methods: {
     inputHandler(event) {
-      console.log();
       this.$emit("update:modelValue", event.target.value);
-      // this.content = event.target.value;
     },
 
-    getCharsCountPerLine() {
-      console.log("get chars count per Line");
+    calculateStringLines(str) {
+      const t = this.$refs.textarea;
+      const b = this.$refs.bufer;
+
+      const cs = window.getComputedStyle(t);
+      const lh = isNaN(parseInt(cs.lineHeight))
+        ? parseInt(cs.fontSize)
+        : parseInt(cs.lineHeight);
+
+      b.style.width = t.clientWidth + 1 + "px";
+      b.value = str;
+
+      const res = Math.floor(b.scrollHeight / lh);
+      if (res == 0) res = 1;
+      return res;
     },
 
     onMouseDown() {
-      const textarea = this.$refs.textarea;
-      console.log("textarea:", textarea);
-      const { clientWidth: w, clientHeight: h } = textarea;
-
-      const detect = () => {
-        const { clientWidth: newW, clientHeight: newH } = textarea;
-        if ((newW !== w) & (newH !== h)) {
-          this.getCharsCountPerLine();
-        }
-      };
-
-      const stop = () => {
-        this.getCharsCountPerLine();
-        document.removeEventListener("mousemove", detect);
-        document.removeEventListener("mouseup", stop);
-      };
-
-      document.addEventListener("mousemove", detect);
-      document.addEventListener("mouseup", stop);
+      // const textarea = this.$refs.textarea;
+      // console.log("textarea:", textarea);
+      // const { clientWidth: w, clientHeight: h } = textarea;
+      // const detect = () => {
+      //   const { clientWidth: newW, clientHeight: newH } = textarea;
+      //   if ((newW !== w) & (newH !== h)) {
+      //     this.getCharsCountPerLine();
+      //   }
+      // };
+      // const stop = () => {
+      //   this.getCharsCountPerLine();
+      //   document.removeEventListener("mousemove", detect);
+      //   document.removeEventListener("mouseup", stop);
+      // };
+      // document.addEventListener("mousemove", detect);
+      // document.addEventListener("mouseup", stop);
     },
 
     onScroll(e) {
@@ -89,6 +108,10 @@ export default {
 </script>
 
 <template>
+  <textarea class="bufer" ref="bufer" rows="1"></textarea>
+  <br />
+  <br />
+
   <div class="textarea-container">
     <div class="textarea-lines-count">
       <div class="lines-container" ref="lines">
@@ -98,7 +121,7 @@ export default {
     <textarea
       :id="id"
       rows="5"
-      class="form-control"
+      class="form-control app-textarea"
       :value="modelValue"
       @input="inputHandler"
       v-on:mousedown="onMouseDown"
@@ -128,7 +151,6 @@ $border-radius: 5px;
   border-top-left-radius: $border-radius;
   border-bottom-left-radius: $border-radius;
   background-color: rgb(228, 228, 228);
-  // font-family: Helvetica, monospace;
 
   .lines-container {
     position: absolute;
@@ -137,7 +159,8 @@ $border-radius: 5px;
   }
 }
 
-textarea {
+.bufer,
+.app-textarea {
   padding: 5px;
   border: 1px solid lightgray;
   border-left: none;
@@ -146,7 +169,7 @@ textarea {
   font-size: 13px;
   line-height: 150%;
   outline: none;
-  // font-family: Helvetica, monospace;
+  font-family: monospace;
 }
 
 .app-textarea {
