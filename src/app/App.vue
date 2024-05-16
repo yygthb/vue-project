@@ -7,7 +7,7 @@ import Navbar from "@/widgets/Navbar/Navbar.vue";
     <Navbar class="header" />
 
     <main class="main">
-      <div class="container">MAIN</div>
+      <div class="container">MAIN PAGE</div>
     </main>
   </div>
 </template>
