@@ -42,7 +42,6 @@ import {
 
 setPlugins(plugin_crop, plugin_finetune, plugin_filter, plugin_annotate);
 
-// Create FilePond component
 const FilePond = vueFilePond(
   FilePondPluginImageEditor,
   FilePondPluginFilePoster
@@ -114,8 +113,6 @@ export default {
 </script>
 
 <template>
-  <h2>FilePond</h2>
-
   <form @:submit="handleSubmit">
     <file-pond
       ref="pond"
