@@ -90,7 +90,7 @@ export default {
       b.style.width = t.clientWidth + 1 + "px";
       b.value = str;
 
-      const res = Math.floor(b.scrollHeight / lh);
+      let res = Math.floor(b.scrollHeight / lh);
       if (res == 0) res = 1;
       return res;
     },
