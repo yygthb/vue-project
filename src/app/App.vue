@@ -1,20 +1,11 @@
 <script>
 import Navbar from "@/widgets/Navbar/Navbar.vue";
-import LinedTextarea from "@/shared/ui/LinedTextarea/LinedTextarea.vue";
-import AppTextarea from "@/shared/ui/AppTextarea/AppTextarea.vue";
+import TextareaPage from "@/pages/TextareaPage/TextareaPage.vue";
 
 export default {
   components: {
     Navbar,
-    LinedTextarea,
-    AppTextarea,
-  },
-
-  data() {
-    return {
-      text: "str1\nTo use it, simply create a new instance of `ResizeObserver` and call the `observe()` meth o p s t u v w x y z\nTo use it, simply create a new instance of `ResizeObserver` and call the `observe()` meth o p s t u\nq\nw\ne\nr\nt\ny",
-      // text: "str1\nstr2\nstr3\nstr4",
-    };
+    TextareaPage,
   },
 };
 </script>
@@ -25,29 +16,7 @@ export default {
 
     <main class="main">
       <div class="container">
-        <h1>MAIN PAGE</h1>
-        <br />
-
-        <LinedTextarea
-          :label="'Ad Group Name'"
-          :tip="'Used as part of full name - <user>:<site>-<market>-<language>-<device>-<ad group name>'"
-          v-model="text"
-          :showAssistInput="true"
-        />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-
-        <p>{{ text }}</p>
-        <br />
-        <p>textarea content:</p>
-        <AppTextarea
-          :label="'Ad Group Name'"
-          :tip="'Used as part of full name - <user>:<site>-<market>-<language>-<device>-<ad group name>'"
-          v-model="text"
-        />
+        <TextareaPage />
       </div>
     </main>
   </div>
@@ -55,8 +24,14 @@ export default {
 
 <style scoped lang="scss">
 .app {
-  .header {
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  .main {
+    flex: 1;
+    margin-top: 30px;
+    margin-bottom: 50px;
   }
 }
 </style>
