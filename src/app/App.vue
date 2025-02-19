@@ -1,11 +1,13 @@
 <script>
 import Navbar from "@/widgets/Navbar/Navbar.vue";
 import TextareaPage from "@/pages/TextareaPage/TextareaPage.vue";
+import ImagePickerPage from "@/pages/ImagePickerPage/ImagePickerPage.vue";
 
 export default {
   components: {
     Navbar,
     TextareaPage,
+    ImagePickerPage,
   },
 };
 </script>
@@ -16,7 +18,9 @@ export default {
 
     <main class="main">
       <div class="container">
-        <TextareaPage />
+        <!-- <TextareaPage /> -->
+
+        <ImagePickerPage />
       </div>
     </main>
   </div>
