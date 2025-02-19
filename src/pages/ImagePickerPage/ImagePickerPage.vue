@@ -10,13 +10,17 @@ export default {
   },
 
   data() {
-    return {};
+    return {
+      info: [
+        'PQina FilePond: https://github.com/pqina/vue-filepond'
+      ]
+    };
   },
 };
 </script>
 
 <template>
-  <PageWrapper :title="'Image Picker'">
+  <PageWrapper :title="'Image Picker'" :info="info">
     <FilePond />
   </PageWrapper>
 </template>
