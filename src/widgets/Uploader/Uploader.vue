@@ -1,0 +1,217 @@
+<script>
+import { v4 as uuidv4 } from "uuid";
+
+export default {
+  props: {
+    isMultiple: {
+      type: Boolean,
+      default: false,
+    },
+
+    maxCount: {
+      type: Number,
+      default: 1,
+    },
+  },
+
+  data() {
+    return {
+      images: [],
+    };
+  },
+
+  methods: {
+    onFileChange(event) {
+      console.log("file changed", event.target.files);
+
+      if (!this.isMultiple && this.images.length) {
+        return;
+      }
+
+      const files = event.target.files;
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          const imgRes = {
+            id: uuidv4(),
+            src: e.target.result,
+          };
+          this.images.push(imgRes);
+        };
+
+        reader.readAsDataURL(file);
+      }
+    },
+  },
+
+  computed: {
+    showAddImgBtn() {
+      if (this.isMultiple && this.images.length <= this.maxCount) {
+        return true;
+      }
+
+      if (!this.isMultiple && this.images.length === 0) {
+        return true;
+      }
+
+      return false;
+    },
+
+    showDropTitle() {
+      return !this.images.length;
+    },
+
+    showAddBtn() {
+      if (this.isMultiple && this.images.length < this.maxCount) {
+        return true;
+      }
+
+      return true;
+    },
+  },
+};
+</script>
+
+<template>
+  <div>
+    <div class="upload-container">
+      <div v-if="showAddImgBtn" class="upload-header">
+        <button>
+          <span>UPLOAD IMAGES</span>
+          <input
+            class="upload-btn"
+            type="file"
+            @change="onFileChange"
+            accept="image/*"
+            :multiple="isMultiple"
+          />
+        </button>
+      </div>
+
+      <div :class="['preview-container', !showDropTitle && 'hideBorder']">
+        <div class="drop-wrapper">
+          <span v-if="showDropTitle" class="drop-title"
+            >Drop Your Images Here</span
+          >
+
+          <input
+            class="upload-btn"
+            type="file"
+            @change="onFileChange"
+            accept="image/*"
+            :multiple="isMultiple"
+          />
+
+          <div v-if="images.length" class="images-container">
+            <div
+              class="img-wrapper"
+              v-for="(img, index) in images"
+              :key="index"
+            >
+              <img :src="img.src" class="img" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="upload-footer"></div>
+    </div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+input.upload-btn {
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  cursor: pointer;
+
+  background-color: rgba(173, 216, 230, 0.33);
+  // opacity: 1;
+}
+
+.upload-container {
+  padding: 20px;
+  border-radius: 20px;
+  background-color: #fff;
+  box-shadow: 5px 5px 8px 3px #ccc;
+
+  .upload-header {
+    button {
+      position: relative;
+      display: block;
+      margin: 0 auto;
+      padding: 5px 10px;
+    }
+  }
+}
+
+.upload-header ~ .preview-container {
+  margin-top: 20px;
+}
+
+.preview-container {
+  position: relative;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='20' ry='20' stroke='lightblue' stroke-width='2' stroke-dasharray='10 1 10' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+  border-radius: 20px;
+
+  &.hideBorder {
+    background-image: none;
+  }
+
+  .drop-wrapper {
+    position: relative;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    // -webkit-transition: background-color 200ms linear;
+    // -ms-transition: background-color 200ms linear;
+    // transition: background-color 200ms linear;
+
+    // &:hover {
+    //   background-color: #f3f3f3;
+    // }
+
+    .drop-title {
+      position: absolute;
+      font-size: 20px;
+      opacity: 0.2;
+    }
+  }
+}
+
+.images-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 200px;
+  gap: 20px;
+}
+
+.img-wrapper,
+.add-new-img {
+  overflow: hidden;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.img-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+</style>

@@ -13,8 +13,10 @@
     "@pqina/filepond-plugin-image-editor": "^9.2.0",
     "@pqina/pintura": "^8.92.2",
     "@pqina/vue-pintura": "^9.0.2",
+    "cropperjs": "^1.6.2",
     "filepond": "^4.30.4",
     "filepond-plugin-file-poster": "^2.5.1",
+    "uuid": "^11.1.0",
     "vue": "^3.4.21",
     "vue-filepond": "^7.0.3"
   },
