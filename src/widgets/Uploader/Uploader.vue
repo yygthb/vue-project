@@ -25,6 +25,7 @@ export default {
       console.log("file changed", event.target.files);
 
       if (!this.isMultiple && this.images.length) {
+        console.log("ismultiple and images.length");
         return;
       }
 
@@ -35,8 +36,10 @@ export default {
         const reader = new FileReader();
 
         reader.onload = (e) => {
+          console.log("reader onload", e);
           const imgRes = {
             id: uuidv4(),
+            name: file.name || e.target.result.substring(0, 30),
             src: e.target.result,
           };
           this.images.push(imgRes);
@@ -107,11 +110,17 @@ export default {
 
           <div v-if="images.length" class="images-container">
             <div
-              class="img-wrapper"
               v-for="(img, index) in images"
               :key="index"
+              class="img-preview"
             >
-              <img :src="img.src" class="img" />
+              <div class="preview-header">
+                <p class="img-title">{{ img.name }}</p>
+                <span class="close">✕</span>
+              </div>
+              <div class="img-wrapper">
+                <img :src="img.src" class="img" />
+              </div>
             </div>
           </div>
         </div>
@@ -123,6 +132,8 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+$preview-header-height: 30px;
+
 input.upload-btn {
   position: absolute;
   display: block;
@@ -196,22 +207,57 @@ input.upload-btn {
   gap: 20px;
 }
 
-.img-wrapper,
-.add-new-img {
+.img-preview {
+  position: relative;
+  z-index: 1;
   overflow: hidden;
   border: 1px solid #ddd;
   border-radius: 20px;
   background-color: #fff;
+
+  .preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    height: $preview-header-height;
+    padding: 0 10px;
+  }
+
+  .img-title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    opacity: 0.3;
+  }
+
+  .close {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    border: 1px solid #777;
+    color: #777;
+    cursor: pointer;
+
+    &:hover {
+      border-color: #333;
+      color: #333;
+    }
+  }
 }
 
 .img-wrapper {
-  position: relative;
-  z-index: 1;
+  height: 100%;
 }
 
 .img {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 20px);
   object-fit: contain;
 }
 </style>
