@@ -133,9 +133,10 @@ export default {
                 class="img-preview"
               >
                 <div class="preview-header">
-                  <p class="img-title">{{ img.name }}</p>
                   <span class="close" @click="onImgRemove(img)">✕</span>
+                  <p class="img-title">{{ img.name }}</p>
                 </div>
+
                 <div class="img-wrapper">
                   <img :src="img.src" class="img" />
                 </div></div
@@ -153,8 +154,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-$preview-header-height: 30px;
-
 input.upload-btn {
   position: absolute;
   display: block;
@@ -198,52 +197,59 @@ button {
 }
 
 .images-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: 200px;
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
 }
 
 .img-preview {
   position: relative;
+  flex-basis: 150px;
+  height: 200px;
+  position: relative;
   z-index: 1;
   overflow: hidden;
-  border: 1px solid #ddd;
+  border: 1px solid #e6e6e6;
   border-radius: 20px;
   background-color: #fff;
 
   .preview-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    height: $preview-header-height;
-    padding: 0 10px;
-  }
-
-  .img-title {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-size: 14px;
-    opacity: 0.3;
-  }
-
-  .close {
-    flex-shrink: 0;
+    position: absolute;
+    top: 0;
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 10px;
-    border: 1px solid #777;
-    color: #777;
-    cursor: pointer;
+    gap: 10px;
+    width: 100%;
+    height: 35px;
+    padding: 0 10px 5px;
+    background: linear-gradient(#333, rgba(#838383, 0.3) 75%, transparent);
 
-    &:hover {
-      border-color: #333;
-      color: #333;
+    .img-title {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-size: 10px;
+      color: #fff;
+    }
+
+    .close {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 10px;
+      border: 1px solid #333;
+      background-color: #333;
+      color: #fff;
+      cursor: pointer;
+
+      &:hover {
+        border-color: #fff;
+        background-color: #333;
+        color: #fff;
+      }
     }
   }
 }
@@ -254,7 +260,7 @@ button {
 
 .img {
   width: 100%;
-  height: calc(100% - 20px);
+  height: 100%;
   object-fit: contain;
 }
 
