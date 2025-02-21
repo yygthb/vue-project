@@ -1,7 +1,12 @@
 <script>
 import { v4 as uuidv4 } from "uuid";
+import DropArea from "@/shared/ui/DropArea/DropArea.vue";
 
 export default {
+  components: {
+    DropArea,
+  },
+
   props: {
     isMultiple: {
       type: Boolean,
@@ -26,6 +31,10 @@ export default {
 
   methods: {
     onFileChange(event) {
+      this.handleFiles(event.target.files);
+    },
+
+    handleFiles(f) {
       if (!this.isMultiple && this.images.length) {
         return;
       }
@@ -34,8 +43,7 @@ export default {
         return;
       }
 
-      let files = [...event.target.files];
-      files = files.slice(0, this.maxCount - this.images.length);
+      const files = [...f].slice(0, this.maxCount - this.images.length);
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -111,24 +119,12 @@ export default {
         </button>
       </div>
 
-      <div :class="['preview-container', !showDropTitle && 'hideBorder']">
-        <div class="drop-wrapper">
-          <span v-if="showDropTitle" class="drop-title"
-            >Drop Your Images Here</span
-          >
-
-          <input
-            :class="[
-              'upload-btn',
-              !imagesCouldBeAdded && 'upload-btn_disabled',
-              // images.length && 'upload-btn_disabled',
-            ]"
-            type="file"
-            @change="onFileChange"
-            accept="image/*"
-            :multiple="isMultiple"
-          />
-
+      <div class="preview-container">
+        <DropArea
+          class="drop-area"
+          @handleFiles="handleFiles"
+          :disabled="!imagesCouldBeAdded"
+        >
           <div v-if="images.length" class="images-container">
             <transition-group name="fade">
               <div
@@ -145,7 +141,7 @@ export default {
                 </div></div
             ></transition-group>
           </div>
-        </div>
+        </DropArea>
       </div>
 
       <div v-if="showFooter" class="upload-footer">
@@ -199,38 +195,6 @@ button {
 
 .upload-header ~ .preview-container {
   margin-top: 20px;
-}
-
-.preview-container {
-  position: relative;
-  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='20' ry='20' stroke='lightblue' stroke-width='2' stroke-dasharray='10 1 10' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
-  border-radius: 20px;
-
-  &.hideBorder {
-    background-image: none;
-  }
-
-  .drop-wrapper {
-    position: relative;
-    min-height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 20px;
-    // -webkit-transition: background-color 200ms linear;
-    // -ms-transition: background-color 200ms linear;
-    // transition: background-color 200ms linear;
-
-    // &:hover {
-    //   background-color: #f3f3f3;
-    // }
-
-    .drop-title {
-      position: absolute;
-      font-size: 20px;
-      opacity: 0.2;
-    }
-  }
 }
 
 .images-container {
