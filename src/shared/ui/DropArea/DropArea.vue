@@ -78,7 +78,7 @@ export default {
   border-radius: 20px;
 
   .drop-title {
-    font-size: 20px;
+    font-size: 32px;
     opacity: 0.2;
   }
 
