@@ -36,7 +36,6 @@ export default {
         const reader = new FileReader();
 
         reader.onload = (e) => {
-          console.log("reader onload", e);
           const imgRes = {
             id: uuidv4(),
             name: file.name || e.target.result.substring(0, 30),
@@ -47,6 +46,10 @@ export default {
 
         reader.readAsDataURL(file);
       }
+    },
+
+    onImgRemove(img) {
+      this.images = this.images.filter((i) => i.id !== img.id);
     },
   },
 
@@ -109,19 +112,20 @@ export default {
           />
 
           <div v-if="images.length" class="images-container">
-            <div
-              v-for="(img, index) in images"
-              :key="index"
-              class="img-preview"
-            >
-              <div class="preview-header">
-                <p class="img-title">{{ img.name }}</p>
-                <span class="close">✕</span>
-              </div>
-              <div class="img-wrapper">
-                <img :src="img.src" class="img" />
-              </div>
-            </div>
+            <transition-group name="fade">
+              <div
+                v-for="(img, index) in images"
+                :key="index"
+                class="img-preview"
+              >
+                <div class="preview-header">
+                  <p class="img-title">{{ img.name }}</p>
+                  <span class="close" @click="onImgRemove(img)">✕</span>
+                </div>
+                <div class="img-wrapper">
+                  <img :src="img.src" class="img" />
+                </div></div
+            ></transition-group>
           </div>
         </div>
       </div>
@@ -259,5 +263,15 @@ input.upload-btn {
   width: 100%;
   height: calc(100% - 20px);
   object-fit: contain;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
