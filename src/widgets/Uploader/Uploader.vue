@@ -10,7 +10,7 @@ export default {
 
     maxCount: {
       type: Number,
-      default: 1,
+      default: 10,
     },
   },
 
@@ -22,14 +22,16 @@ export default {
 
   methods: {
     onFileChange(event) {
-      console.log("file changed", event.target.files);
-
       if (!this.isMultiple && this.images.length) {
-        console.log("ismultiple and images.length");
         return;
       }
 
-      const files = event.target.files;
+      if (!this.isMultiple && this.images.length === this.maxCount) {
+        return;
+      }
+
+      let files = [...event.target.files];
+      files = files.slice(0, this.maxCount - this.images.length);
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -54,8 +56,8 @@ export default {
   },
 
   computed: {
-    showAddImgBtn() {
-      if (this.isMultiple && this.images.length <= this.maxCount) {
+    imagesCouldBeAdded() {
+      if (this.isMultiple && this.images.length < this.maxCount) {
         return true;
       }
 
@@ -84,7 +86,7 @@ export default {
 <template>
   <div>
     <div class="upload-container">
-      <div v-if="showAddImgBtn" class="upload-header">
+      <div v-if="imagesCouldBeAdded" class="upload-header">
         <button>
           <span>UPLOAD IMAGES</span>
           <input
@@ -104,7 +106,10 @@ export default {
           >
 
           <input
-            class="upload-btn"
+            :class="[
+              'upload-btn',
+              !imagesCouldBeAdded && 'upload-btn_disabled',
+            ]"
             type="file"
             @change="onFileChange"
             accept="image/*"
@@ -150,6 +155,10 @@ input.upload-btn {
 
   background-color: rgba(173, 216, 230, 0.33);
   // opacity: 1;
+
+  &_disabled {
+    pointer-events: none;
+  }
 }
 
 .upload-container {

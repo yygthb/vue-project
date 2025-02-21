@@ -54,7 +54,7 @@ export default {
 
     <div class="section">
       <h4 class="section-title">{{ uploaderTitle }}</h4>
-      <Uploader :isMultiple="true" :maxCount="10" />
+      <Uploader :isMultiple="true" :maxCount="2" />
     </div>
 
     <!-- <hr />
