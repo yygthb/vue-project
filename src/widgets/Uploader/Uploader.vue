@@ -145,7 +145,7 @@ export default {
         </DropArea>
       </div>
 
-      <div v-if="showFooter" class="upload-footer">
+      <div :class="['upload-footer', !images.length && 'disabled']">
         <button @click="removeAllImages">REMOVE ALL IMAGES</button>
         <button @click="removeAllImages">UPLOAD</button>
       </div>
@@ -279,5 +279,10 @@ button {
   display: flex;
   justify-content: end;
   gap: 20px;
+
+  &.disabled {
+    opacity: 0.55;
+    pointer-events: none;
+  }
 }
 </style>
