@@ -20,6 +20,10 @@ export default {
     };
   },
 
+  mounted() {
+    console.log("this.maxCount: ", this.maxCount);
+  },
+
   methods: {
     onFileChange(event) {
       if (!this.isMultiple && this.images.length) {
@@ -53,6 +57,10 @@ export default {
     onImgRemove(img) {
       this.images = this.images.filter((i) => i.id !== img.id);
     },
+
+    removeAllImages() {
+      this.images = [];
+    },
   },
 
   computed: {
@@ -78,6 +86,10 @@ export default {
       }
 
       return true;
+    },
+
+    showFooter() {
+      return this.images.length;
     },
   },
 };
@@ -109,6 +121,7 @@ export default {
             :class="[
               'upload-btn',
               !imagesCouldBeAdded && 'upload-btn_disabled',
+              // images.length && 'upload-btn_disabled',
             ]"
             type="file"
             @change="onFileChange"
@@ -135,7 +148,10 @@ export default {
         </div>
       </div>
 
-      <div class="upload-footer"></div>
+      <div v-if="showFooter" class="upload-footer">
+        <button @click="removeAllImages">REMOVE ALL IMAGES</button>
+        <button @click="removeAllImages">UPLOAD</button>
+      </div>
     </div>
   </div>
 </template>
@@ -161,6 +177,12 @@ input.upload-btn {
   }
 }
 
+button {
+  display: block;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
 .upload-container {
   padding: 20px;
   border-radius: 20px;
@@ -170,9 +192,7 @@ input.upload-btn {
   .upload-header {
     button {
       position: relative;
-      display: block;
       margin: 0 auto;
-      padding: 5px 10px;
     }
   }
 }
@@ -282,5 +302,12 @@ input.upload-btn {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.preview-container ~ .upload-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: end;
+  gap: 20px;
 }
 </style>
