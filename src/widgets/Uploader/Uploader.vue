@@ -1,11 +1,15 @@
 <script>
 import { v4 as uuidv4 } from "uuid";
-import DropArea from "@/shared/ui/DropArea/DropArea.vue";
 import { fetchImages } from "@/api/api";
+import DropArea from "@/shared/ui/DropArea/DropArea.vue";
+import Close from "./ui/Close.vue";
+import Edit from "./ui/Edit.vue";
 
 export default {
   components: {
     DropArea,
+    Close,
+    Edit,
   },
 
   props: {
@@ -27,7 +31,7 @@ export default {
   },
 
   mounted() {
-    console.log("this.maxCount: ", this.maxCount);
+    this.loadImages();
   },
 
   methods: {
@@ -73,12 +77,12 @@ export default {
 
     loadImages() {
       const images_from_api = fetchImages();
-      images_from_api.forEach(imgBase64 => {
+      images_from_api.forEach((imgBase64) => {
         this.images.push({
           id: uuidv4(),
           src: imgBase64,
-        })
-      })
+        });
+      });
     },
   },
 
@@ -146,13 +150,15 @@ export default {
                 class="img-preview"
               >
                 <div class="preview-header">
-                  <span class="close" @click="onImgRemove(img)">✕</span>
+                  <Close @click="onImgRemove(img)" />
                   <p class="img-title">{{ img.name }}</p>
                 </div>
 
                 <div class="img-wrapper">
                   <img :src="img.src" class="img" />
-                </div></div
+                </div>
+
+                <Edit /></div
             ></transition-group>
           </div>
         </DropArea>
@@ -245,23 +251,16 @@ button {
       color: #fff;
     }
 
-    .close {
+    .close-button {
       flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 20px;
-      height: 20px;
-      border-radius: 10px;
-      border: 1px solid #333;
-      background-color: #333;
-      color: #fff;
+      width: 22px;
+      height: 22px;
       cursor: pointer;
 
       &:hover {
-        border-color: #fff;
-        background-color: #333;
-        color: #fff;
+        .circle {
+          stroke: #fff;
+        }
       }
     }
   }
@@ -275,6 +274,15 @@ button {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.edit-button {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 28px;
 }
 
 .fade-enter-active,
