@@ -141,6 +141,7 @@ export default {
     .app-modal__container {
       max-width: 90%;
       height: 90%;
+      max-height: 900px;
     }
     .app-modal__body {
       max-height: unset;

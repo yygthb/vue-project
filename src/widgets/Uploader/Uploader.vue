@@ -78,7 +78,6 @@ export default {
     },
 
     onImgEdit(img) {
-      console.log("edit img", img);
       this.isCropperModalOpen = true;
       this.selectedImg = img;
     },
@@ -94,6 +93,10 @@ export default {
           id: uuidv4(),
           src: imgBase64,
         });
+      });
+      this.images.push({
+        id: uuidv4(),
+        src: "https://static.vecteezy.com/system/resources/previews/012/168/187/large_2x/beautiful-sunset-on-the-beach-with-palm-tree-for-travel-and-vacation-free-photo.JPG",
       });
     },
   },

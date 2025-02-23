@@ -1,25 +1,15 @@
 <script>
 import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.css";
+
+import Loader from "@/shared/ui/Loader/Loader.vue";
 import RotateLeft from "./ui/RotateLeft.vue";
 import RotateRight from "./ui/RotateRight.vue";
 import CropIcon from "./ui/CropIcon.vue";
 
-// {
-//   "rotate": 90,
-//   "scaleX": 1,
-//   "scaleY": 1,
-//   "naturalWidth": 400,
-//   "naturalHeight": 600,
-//   "aspectRatio": 0.6666666666666666,
-//   "width": 500,
-//   "height": 750,
-//   "left": 125,
-//   "top": -125
-// }
-
 export default {
   components: {
+    Loader,
     RotateLeft,
     RotateRight,
     CropIcon,
@@ -34,42 +24,52 @@ export default {
   data() {
     return {
       cropper: null,
+      originalImgUrl: "",
+      rotate: 0,
+      isReady: false,
       isCropperOpen: false,
-
-      width: 0,
-      height: 0,
     };
   },
 
   mounted() {
+    this.originalImgUrl = this.image.src;
+
     this.initCropper();
   },
 
   methods: {
     initCropper() {
       this.cropper = new Cropper(this.$refs.image, {
-        viewMode: 1,
+        responsive: true,
         background: false,
         zoomable: false,
-        autoCrop: true,
-        autoCropArea: 0.8,
+        scalable: false,
+        viewMode: 1,
+        autoCrop: false,
+        autoCropArea: 1,
 
-        ready: function () {
-          this.cropper.clear();
-          this.cropper.disable();
+        ready: () => {
+          this.isReady = true;
+          console.log("ready");
+          // this.cropper.clear();
+          // this.cropper.disable();
+        },
+
+        crop: function () {
+          console.log("crop");
         },
       });
     },
 
     runCropperHandler() {
-      if (this.isCropperOpen) {
-        this.clearCropper();
-        this.disableCropper();
-      } else {
-        this.cropper.enable();
-        this.cropper.crop();
-        this.isCropperOpen = true;
-      }
+      // if (this.isCropperOpen) {
+      //   this.clearCropper();
+      //   this.disableCropper();
+      // } else {
+      //   this.cropper.enable();
+      //   this.cropper.crop();
+      //   this.isCropperOpen = true;
+      // }
     },
 
     clearCropper() {
@@ -82,25 +82,46 @@ export default {
       this.isCropperOpen = false;
     },
 
-    rotateRight() {
-      this.clearCropper();
-      this.cropper.rotate(90);
-      this.disableCropper();
-    },
+    // rotateRight() {
+    //   // console.log(this.cropper.getContainerData());
+    //   // console.log(this.cropper.getImageData());
+    //   // console.log(this.cropper.getCropBoxData());
 
-    rotateLeft() {
-      this.clearCropper();
-      this.cropper.rotate(-90);
-      this.disableCropper();
+    //   this.cropper.rotate(90);
+    //   this.replaceCropperUrl();
+    // },
+
+    // rotateLeft() {
+    //   this.cropper.rotate(-90);
+    //   this.replaceCropperUrl();
+    // },
+
+    rotateCropper(deg) {
+      this.rotate += deg;
+      if (Math.abs(this.rotate) === 360) {
+        this.rotate = 0;
+      }
+      this.cropper.rotate(deg);
+      this.replaceCropperUrl();
     },
 
     logCropper() {
-      console.log("cropper: ", this.cropper);
+      // console.log("cropper: ", this.cropper);
       // console.log(
       //   "cropper getContainerData: ",
       //   this.cropper.getContainerData()
       // );
       // console.log("cropper getImageData: ", this.cropper.getImageData());
+
+      console.log(this.cropper.getContainerData());
+      console.log(this.cropper.getImageData());
+      console.log(this.cropper.getCropBoxData());
+    },
+
+    replaceCropperUrl() {
+      const croppedCanvas = this.cropper.getCroppedCanvas();
+      const imgUrl = croppedCanvas.toDataURL();
+      this.cropper.replace(imgUrl);
     },
 
     alignImg() {
@@ -120,15 +141,16 @@ export default {
   <div class="cropper">
     <div class="cropper-header">
       <span title="rotate-left">
-        <RotateLeft @click="rotateLeft" class="icon rotate-icon" />
+        <RotateLeft @click="rotateCropper(-90)" class="icon rotate-icon" />
       </span>
       <span title="rotate-right">
-        <RotateRight @click="rotateRight" class="icon rotate-icon" />
+        <RotateRight @click="rotateCropper(90)" class="icon rotate-icon" />
       </span>
     </div>
     <div class="cropper-body">
       <div class="img-container">
-        <img :src="image.src" ref="image" class="img" />
+        <Loader :class="{ hidden: isReady }" />
+        <img :src="image.src" ref="image" class="img hidden" />
       </div>
     </div>
     <div class="cropper-footer">
@@ -182,14 +204,15 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  height: calc(100% - 140px);
+  min-height: 400px;
   background-color: rgba(240, 128, 128, 0.199);
 }
 
 .img-container {
-  flex: 1;
   width: 100%;
   height: 100%;
-  max-height: 500px;
+  max-height: 700px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -197,14 +220,21 @@ button {
   background-color: rgba(173, 216, 230, 0.219);
 }
 
-.img {
+.img,
+img {
+  display: block;
   height: 100%;
   width: auto;
+  max-width: 100%;
 }
 
 .cropper-footer {
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+.hidden {
+  display: none;
 }
 </style>
