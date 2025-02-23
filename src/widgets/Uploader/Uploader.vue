@@ -1,6 +1,7 @@
 <script>
 import { v4 as uuidv4 } from "uuid";
 import DropArea from "@/shared/ui/DropArea/DropArea.vue";
+import { fetchImages } from "@/api/api";
 
 export default {
   components: {
@@ -69,6 +70,16 @@ export default {
     removeAllImages() {
       this.images = [];
     },
+
+    loadImages() {
+      const images_from_api = fetchImages();
+      images_from_api.forEach(imgBase64 => {
+        this.images.push({
+          id: uuidv4(),
+          src: imgBase64,
+        })
+      })
+    },
   },
 
   computed: {
@@ -105,6 +116,8 @@ export default {
 
 <template>
   <div>
+    <button @click="loadImages">load images</button>
+
     <div class="upload-container">
       <div v-if="imagesCouldBeAdded" class="upload-header">
         <button>
