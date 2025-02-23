@@ -1,11 +1,15 @@
 <script>
 export default {
-  name: 'app-modal',
+  name: "app-modal",
 
   props: {
     show: {
       type: Boolean,
       default: false,
+    },
+    className: {
+      type: String,
+      default: "",
     },
   },
 
@@ -30,7 +34,11 @@ export default {
 </script>
 
 <template>
-  <div v-if="show" class="app-modal-overlay" @click="closeModal">
+  <div
+    v-if="show"
+    :class="['app-modal-overlay', className]"
+    @click="closeModal"
+  >
     <div @click.stop class="app-modal__container">
       <div @click="closeModal" class="app-modal__close">
         <span></span>
@@ -124,6 +132,20 @@ export default {
   .app-modal__header {
     font-size: 20px;
     font-weight: 600;
+  }
+
+  &.modal-cropper {
+    .app-modal__section {
+      padding: 30px;
+    }
+    .app-modal__container {
+      max-width: 90%;
+      height: 90%;
+    }
+    .app-modal__body {
+      max-height: unset;
+      height: 100%;
+    }
   }
 }
 </style>

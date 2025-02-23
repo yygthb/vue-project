@@ -2,12 +2,16 @@
 import { v4 as uuidv4 } from "uuid";
 import { fetchImages } from "@/api/api";
 import DropArea from "@/shared/ui/DropArea/DropArea.vue";
+import Modal from "@/shared/ui/Modal/Modal.vue";
+import ImageCropper from "./ImageCropper.vue";
 import Close from "./ui/Close.vue";
 import Edit from "./ui/Edit.vue";
 
 export default {
   components: {
     DropArea,
+    Modal,
+    ImageCropper,
     Close,
     Edit,
   },
@@ -27,6 +31,8 @@ export default {
   data() {
     return {
       images: [],
+      isCropperModalOpen: false,
+      selectedImg: null,
     };
   },
 
@@ -69,6 +75,12 @@ export default {
 
     onImgRemove(img) {
       this.images = this.images.filter((i) => i.id !== img.id);
+    },
+
+    onImgEdit(img) {
+      console.log("edit img", img);
+      this.isCropperModalOpen = true;
+      this.selectedImg = img;
     },
 
     removeAllImages() {
@@ -115,6 +127,14 @@ export default {
       return this.images.length;
     },
   },
+
+  watch: {
+    isCropperModalOpen() {
+      if (!this.isCropperModalOpen) {
+        this.selectedImg = null;
+      }
+    },
+  },
 };
 </script>
 
@@ -158,7 +178,7 @@ export default {
                   <img :src="img.src" class="img" />
                 </div>
 
-                <Edit /></div
+                <Edit @click="onImgEdit(img)" /></div
             ></transition-group>
           </div>
         </DropArea>
@@ -169,6 +189,16 @@ export default {
         <button @click="removeAllImages">UPLOAD</button>
       </div>
     </div>
+
+    <Modal
+      v-model:show="isCropperModalOpen"
+      :className="'modal-cropper'"
+      class="modal"
+    >
+      <template v-slot:modalBody>
+        <ImageCropper :image="selectedImg" />
+      </template>
+    </Modal>
   </div>
 </template>
 
