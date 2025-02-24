@@ -27,6 +27,7 @@ export default {
       originalImgUrl: "",
       rotate: 0,
       isLoading: false,
+      error: "",
       isCropperOpen: false,
     };
   },
@@ -38,7 +39,16 @@ export default {
   mounted() {
     this.originalImgUrl = this.image.src;
 
-    this.initCropper();
+    const img = new Image();
+    img.src = this.image.src;
+    img.onload = () => {
+      this.initCropper();
+    };
+    img.onerror = (e) => {
+      this.isLoading = false;
+      this.error = 'IMAGE LOADING ERROR';
+      throw new Error("image onload error", e);
+    };
   },
 
   methods: {
@@ -51,12 +61,18 @@ export default {
         scalable: true,
         autoCrop: false,
         autoCropArea: 1,
+        background: true,
 
         ready: () => {
           this.isLoading = false;
           console.log("ready");
           this.cropper.clear();
           this.cropper.disable();
+        },
+
+        error: () => {
+          console.log("error");
+          this.isLoading = false;
         },
 
         crop: () => {
@@ -162,6 +178,7 @@ export default {
     <div class="cropper-body">
       <div class="img-container">
         <Loader :class="{ hidden: !isLoading }" />
+        <p v-if="error" class="error">IMAGE LOADING ERROR</p>
         <img :src="image.src" ref="image" class="img hidden" />
       </div>
     </div>
@@ -170,7 +187,6 @@ export default {
       <span title="crop image">
         <CropIcon @click="runCropperHandler" class="icon crop-icon" />
       </span>
-      <button @click="clearCropper">clear</button>
     </div>
   </div>
 </template>
@@ -195,7 +211,6 @@ button {
 .cropper-footer {
   height: 50px;
   min-height: 50px;
-  background-color: rgba(144, 238, 144, 0.281);
 }
 
 .cropper-header {
@@ -217,7 +232,7 @@ button {
   justify-content: center;
   height: calc(100% - 140px);
   min-height: 400px;
-  background-color: rgba(240, 128, 128, 0.199);
+  // background-color: rgba(240, 128, 128, 0.199);
 }
 
 .img-container {
@@ -228,7 +243,7 @@ button {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: rgba(173, 216, 230, 0.219);
+  background-color: #e6f4fc;
 }
 
 .img,
@@ -242,7 +257,14 @@ img {
 .cropper-footer {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 20px;
+}
+
+.error {
+  font-weight: 700;
+  font-size: 22px;
+  color: #f0a496;
 }
 
 .hidden {
