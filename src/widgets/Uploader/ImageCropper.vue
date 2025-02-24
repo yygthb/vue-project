@@ -26,9 +26,13 @@ export default {
       cropper: null,
       originalImgUrl: "",
       rotate: 0,
-      isReady: false,
+      isLoading: false,
       isCropperOpen: false,
     };
+  },
+
+  beforeMount() {
+    this.isLoading = true;
   },
 
   mounted() {
@@ -49,7 +53,7 @@ export default {
         autoCropArea: 1,
 
         ready: () => {
-          this.isReady = true;
+          this.isLoading = false;
           console.log("ready");
           this.cropper.clear();
           this.cropper.disable();
@@ -157,7 +161,7 @@ export default {
     </div>
     <div class="cropper-body">
       <div class="img-container">
-        <Loader :class="{ hidden: isReady }" />
+        <Loader :class="{ hidden: !isLoading }" />
         <img :src="image.src" ref="image" class="img hidden" />
       </div>
     </div>
