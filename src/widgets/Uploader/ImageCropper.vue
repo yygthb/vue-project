@@ -46,7 +46,7 @@ export default {
     };
     img.onerror = (e) => {
       this.isLoading = false;
-      this.error = 'IMAGE LOADING ERROR';
+      this.error = "IMAGE LOADING ERROR";
       throw new Error("image onload error", e);
     };
   },
@@ -185,7 +185,11 @@ export default {
     <div class="cropper-footer">
       <button @click="logCropper">get cropper info</button>
       <span title="crop image">
-        <CropIcon @click="runCropperHandler" class="icon crop-icon" />
+        <CropIcon
+          @click="runCropperHandler"
+          class="icon crop-icon"
+          :isActive="isCropperOpen"
+        />
       </span>
     </div>
   </div>
@@ -222,6 +226,7 @@ button {
 
 .icon {
   width: 30px;
+  height: 30px;
   cursor: pointer;
 }
 
