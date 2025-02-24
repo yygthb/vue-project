@@ -40,36 +40,68 @@ export default {
   methods: {
     initCropper() {
       this.cropper = new Cropper(this.$refs.image, {
+        viewMode: 1,
         responsive: true,
         background: false,
         zoomable: false,
-        scalable: false,
-        viewMode: 1,
+        scalable: true,
         autoCrop: false,
         autoCropArea: 1,
 
         ready: () => {
           this.isReady = true;
           console.log("ready");
-          // this.cropper.clear();
-          // this.cropper.disable();
+          this.cropper.clear();
+          this.cropper.disable();
         },
 
-        crop: function () {
+        crop: () => {
           console.log("crop");
         },
       });
     },
 
+    fitCropBoxToImage(offset = 0) {
+      const canvasData = this.cropper.getCanvasData();
+      this.cropper.setCropBoxData({
+        left: canvasData.left + offset,
+        top: canvasData.top + offset,
+        width: canvasData.width - offset * 2,
+        height: canvasData.height - offset * 2,
+      });
+    },
+
+    handleScaleImg() {
+      this.cropper.scale(1);
+      const containerData = this.cropper.getContainerData();
+      containerData.aspectRatio = containerData.width / containerData.height;
+
+      const imgData = this.cropper.getImageData();
+      const isHoriz = imgData.aspectRatio > 1;
+
+      if (isHoriz && [90, 270, -90, -270].includes(imgData.rotate)) {
+        this.cropper.scale(containerData.height / imgData.width);
+      }
+
+      if (!isHoriz && [90, 270, -90, -270].includes(imgData.rotate)) {
+        if (containerData.aspectRatio < 1) {
+          this.cropper.scale(containerData.width / imgData.height);
+        } else {
+          this.cropper.scale(containerData.height / imgData.width);
+        }
+      }
+    },
+
     runCropperHandler() {
-      // if (this.isCropperOpen) {
-      //   this.clearCropper();
-      //   this.disableCropper();
-      // } else {
-      //   this.cropper.enable();
-      //   this.cropper.crop();
-      //   this.isCropperOpen = true;
-      // }
+      if (this.isCropperOpen) {
+        this.clearCropper();
+        this.disableCropper();
+      } else {
+        this.cropper.enable();
+        this.cropper.crop();
+        this.fitCropBoxToImage(50);
+        this.isCropperOpen = true;
+      }
     },
 
     clearCropper() {
@@ -82,50 +114,26 @@ export default {
       this.isCropperOpen = false;
     },
 
-    // rotateRight() {
-    //   // console.log(this.cropper.getContainerData());
-    //   // console.log(this.cropper.getImageData());
-    //   // console.log(this.cropper.getCropBoxData());
-
-    //   this.cropper.rotate(90);
-    //   this.replaceCropperUrl();
-    // },
-
-    // rotateLeft() {
-    //   this.cropper.rotate(-90);
-    //   this.replaceCropperUrl();
-    // },
-
     rotateCropper(deg) {
+      this.clearCropper();
       this.rotate += deg;
       if (Math.abs(this.rotate) === 360) {
         this.rotate = 0;
       }
       this.cropper.rotate(deg);
-      this.replaceCropperUrl();
+
+      this.fitCropBoxToImage();
+      this.handleScaleImg();
+      this.disableCropper();
     },
 
     logCropper() {
-      // console.log("cropper: ", this.cropper);
-      // console.log(
-      //   "cropper getContainerData: ",
-      //   this.cropper.getContainerData()
-      // );
-      // console.log("cropper getImageData: ", this.cropper.getImageData());
+      const containerData = this.cropper.getContainerData();
+      containerData.aspectRatio = containerData.width / containerData.height;
+      console.log("containerData: ", containerData);
 
-      console.log(this.cropper.getContainerData());
-      console.log(this.cropper.getImageData());
-      console.log(this.cropper.getCropBoxData());
-    },
-
-    replaceCropperUrl() {
-      const croppedCanvas = this.cropper.getCroppedCanvas();
-      const imgUrl = croppedCanvas.toDataURL();
-      this.cropper.replace(imgUrl);
-    },
-
-    alignImg() {
-      this.cropper.setAspectRatio(1);
+      const imgData = this.cropper.getImageData();
+      console.log("imgData: ", imgData);
     },
   },
 
@@ -155,7 +163,6 @@ export default {
     </div>
     <div class="cropper-footer">
       <button @click="logCropper">get cropper info</button>
-      <button @click="alignImg">set left to 0</button>
       <span title="crop image">
         <CropIcon @click="runCropperHandler" class="icon crop-icon" />
       </span>
