@@ -300,13 +300,16 @@ button {
 }
 
 .img-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 100%;
-}
 
-.img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  .img {
+    width: 98%;
+    height: 98%;
+    object-fit: contain;
+  }
 }
 
 .edit-button {
@@ -314,8 +317,8 @@ button {
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
 }
 
 .fade-enter-active,
