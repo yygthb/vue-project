@@ -7,6 +7,11 @@ import RotateLeft from "./ui/RotateLeft.vue";
 import RotateRight from "./ui/RotateRight.vue";
 import CropIcon from "./ui/CropIcon.vue";
 
+const staticData = {
+  ASPECT_RATIO_FREE: NaN,
+  ASPECT_RATIO_16x9: 1.78,
+};
+
 export default {
   components: {
     Loader,
@@ -29,6 +34,11 @@ export default {
       isLoading: false,
       error: "",
       isCropperOpen: false,
+      cropBox: {
+        isOpened: false,
+        aspectRatio: null,
+      },
+      staticData,
     };
   },
 
@@ -183,14 +193,17 @@ export default {
       </div>
     </div>
     <div class="cropper-footer">
-      <button @click="logCropper">get cropper info</button>
-      <span title="crop image">
-        <CropIcon
-          @click="runCropperHandler"
-          class="icon crop-icon"
-          :isActive="isCropperOpen"
-        />
-      </span>
+      <!-- <button @click="logCropper">get cropper info</button> -->
+      <CropIcon
+        @click="runCropper(staticData.ASPECT_RATIO_FREE)"
+        :isActive="cropBox.aspectRatio === staticData.ASPECT_RATIO_FREE"
+      />
+      <CropIcon
+        @click="runCropper(staticData.ASPECT_RATIO_16x9)"
+        :isActive="cropBox.aspectRatio === staticData.ASPECT_RATIO_16x9"
+        :text="'16x9'"
+      />
+      <button @click="cropImage" class="save-btn">SAVE</button>
     </div>
   </div>
 </template>
@@ -237,7 +250,6 @@ button {
   justify-content: center;
   height: calc(100% - 140px);
   min-height: 400px;
-  // background-color: rgba(240, 128, 128, 0.199);
 }
 
 .img-container {
@@ -264,6 +276,22 @@ img {
   align-items: center;
   justify-content: center;
   gap: 20px;
+}
+
+.save-btn {
+  margin-left: auto;
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid #333;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #333;
+
+  &:hover {
+    background-color: #57c757;
+    border-color: #57c757;
+    color: #fff;
+  }
 }
 
 .error {
