@@ -4,8 +4,6 @@ import FilePond from "@/widgets/ImagePicker/FilePond/FilePond.vue";
 import Uploader from "@/widgets/Uploader/Uploader.vue";
 import AppImage from "@/shared/ui/AppImage/AppImage.vue";
 
-import { IMG_BLOB_DATA, BASE64_IMG } from "./data";
-
 export default {
   components: {
     PageWrapper,
@@ -18,29 +16,11 @@ export default {
     return {
       filePondTitle: "FilePond",
       uploaderTitle: "Image Uploader",
-      info: ["PQina FilePond: https://github.com/pqina/vue-filepond"],
-
-      // base64Img: BASE64_IMG,
-      // blobImg: null,
-      // urlImg: "https://html.com/wp-content/uploads/flamingo.jpg",
+      info: [
+        // "PQina FilePond: https://github.com/pqina/vue-filepond",
+        "Vue Component via CropperJS: https://github.com/fengyuanchen/cropperjs/",
+      ],
     };
-  },
-
-  mounted() {
-    this.fetchImage();
-  },
-
-  methods: {
-    fetchImage() {
-      fetch(IMG_BLOB_DATA)
-        .then((response) => response.blob())
-        .then((blob) => {
-          this.blobImg = URL.createObjectURL(blob);
-        })
-        .catch((error) => {
-          console.error("img receiving error:", error);
-        });
-    },
   },
 };
 </script>
