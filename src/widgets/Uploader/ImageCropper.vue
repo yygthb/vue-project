@@ -92,6 +92,7 @@ export default {
         if (this.cropBox.aspectRatio === aspectRatio) {
           this.disableCropBox();
         } else {
+          this.disableCropBox();
           this.enableCropBox(aspectRatio);
         }
       } else {
@@ -103,7 +104,6 @@ export default {
       this.cropBox.isOpened = true;
       this.cropBox.aspectRatio = aspectRatio;
       this.cropper.enable();
-      this.cropper.crop();
       this.cropper.setAspectRatio(aspectRatio);
     },
 
@@ -129,7 +129,7 @@ export default {
       }
       this.cropper.rotate(deg);
 
-      this.fitCropBoxToImage();
+      // this.fitCropBoxToImage();
       this.handleScaleImg();
       this.disableCropBox();
     },
