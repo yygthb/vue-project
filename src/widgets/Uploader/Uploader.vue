@@ -172,9 +172,9 @@ export default {
                 :key="index"
                 class="img-preview"
               >
-                <div class="preview-header">
-                  <Close @click="onImgRemove(img)" />
+                <div :class="['preview-header', img.name && 'shadow-bg']">
                   <p class="img-title">{{ img.name }}</p>
+                  <Close @click="onImgRemove(img)" class="close-button" />
                 </div>
 
                 <div class="img-wrapper">
@@ -256,7 +256,6 @@ button {
 
 .img-preview {
   position: relative;
-  flex-basis: 150px;
   height: 200px;
   position: relative;
   z-index: 1;
@@ -274,7 +273,10 @@ button {
     width: 100%;
     height: 35px;
     padding: 0 10px 5px;
-    background: linear-gradient(#333, rgba(#838383, 0.3) 75%, transparent);
+
+    &.shadow-bg {
+      background: linear-gradient(#333, rgba(#838383, 0.3) 75%, transparent);
+    }
 
     .img-title {
       overflow: hidden;
@@ -286,15 +288,9 @@ button {
 
     .close-button {
       flex-shrink: 0;
+      margin-left: auto;
       width: 22px;
       height: 22px;
-      cursor: pointer;
-
-      &:hover {
-        .circle {
-          stroke: #fff;
-        }
-      }
     }
   }
 }
@@ -306,8 +302,8 @@ button {
   height: 100%;
 
   .img {
-    width: 98%;
-    height: 98%;
+    height: 100%;
+    width: auto;
     object-fit: contain;
   }
 }
