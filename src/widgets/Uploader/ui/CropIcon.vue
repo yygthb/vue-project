@@ -14,10 +14,9 @@ export default {
 </script>
 
 <template>
-  <div class="svg-container">
+  <div :class="['svg-container', isActive && 'opened']">
     <svg
-      id="crop-icon"
-      :class="{ opened: isActive }"
+      id="icon"
       viewBox="0 0 24 24"
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +44,7 @@ $active-color: #ff0000;
   display: flex;
   cursor: pointer;
 
-  #crop-icon {
+  #icon {
     width: 30px;
     height: 30px;
   }

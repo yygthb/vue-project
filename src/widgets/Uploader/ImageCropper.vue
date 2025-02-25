@@ -8,8 +8,10 @@ import RotateRight from "./ui/RotateRight.vue";
 import CropIcon from "./ui/CropIcon.vue";
 
 const staticData = {
-  ASPECT_RATIO_FREE: NaN,
-  ASPECT_RATIO_16x9: 1.78,
+  ASPECT_RATIO_FREE: 0,
+  ASPECT_RATIO_1x1: 1, //  1 / 1
+  ASPECT_RATIO_16x9: 1.78, // 16 / 9
+  ASPECT_RATIO_4x3: 1.33, //  4 / 3
 };
 
 export default {
@@ -33,7 +35,6 @@ export default {
       rotate: 0,
       isLoading: false,
       error: "",
-      isCropperOpen: false,
       cropBox: {
         isOpened: false,
         aspectRatio: null,
@@ -75,20 +76,62 @@ export default {
 
         ready: () => {
           this.isLoading = false;
-          console.log("ready");
           this.cropper.clear();
           this.cropper.disable();
         },
 
-        error: () => {
-          console.log("error");
+        error: (e) => {
+          console.log("Cropper Init Error", e);
           this.isLoading = false;
         },
-
-        crop: () => {
-          console.log("crop");
-        },
       });
+    },
+
+    runCropper(aspectRatio) {
+      if (typeof this.cropBox.aspectRatio === "number") {
+        if (this.cropBox.aspectRatio === aspectRatio) {
+          this.disableCropBox();
+        } else {
+          this.enableCropBox(aspectRatio);
+        }
+      } else {
+        this.enableCropBox(aspectRatio);
+      }
+    },
+
+    enableCropBox(aspectRatio = 0) {
+      this.cropBox.isOpened = true;
+      this.cropBox.aspectRatio = aspectRatio;
+      this.cropper.enable();
+      this.cropper.crop();
+      this.cropper.setAspectRatio(aspectRatio);
+    },
+
+    clearCropBox() {
+      this.cropBox = {
+        isOpened: false,
+        aspectRatio: null,
+      };
+      this.cropper.enable();
+      this.cropper.clear();
+    },
+
+    disableCropBox() {
+      this.clearCropBox();
+      this.cropper.disable();
+    },
+
+    rotateCropper(deg) {
+      this.clearCropBox();
+      this.rotate += deg;
+      if (Math.abs(this.rotate) === 360) {
+        this.rotate = 0;
+      }
+      this.cropper.rotate(deg);
+
+      this.fitCropBoxToImage();
+      this.handleScaleImg();
+      this.disableCropBox();
     },
 
     fitCropBoxToImage(offset = 0) {
@@ -120,41 +163,6 @@ export default {
           this.cropper.scale(containerData.height / imgData.width);
         }
       }
-    },
-
-    runCropperHandler() {
-      if (this.isCropperOpen) {
-        this.clearCropper();
-        this.disableCropper();
-      } else {
-        this.cropper.enable();
-        this.cropper.crop();
-        this.fitCropBoxToImage(50);
-        this.isCropperOpen = true;
-      }
-    },
-
-    clearCropper() {
-      this.cropper.enable();
-      this.cropper.clear();
-    },
-
-    disableCropper() {
-      this.cropper.disable();
-      this.isCropperOpen = false;
-    },
-
-    rotateCropper(deg) {
-      this.clearCropper();
-      this.rotate += deg;
-      if (Math.abs(this.rotate) === 360) {
-        this.rotate = 0;
-      }
-      this.cropper.rotate(deg);
-
-      this.fitCropBoxToImage();
-      this.handleScaleImg();
-      this.disableCropper();
     },
 
     logCropper() {
@@ -197,12 +205,25 @@ export default {
       <CropIcon
         @click="runCropper(staticData.ASPECT_RATIO_FREE)"
         :isActive="cropBox.aspectRatio === staticData.ASPECT_RATIO_FREE"
+        :text="'FREE'"
+      />
+      <CropIcon
+        @click="runCropper(staticData.ASPECT_RATIO_1x1)"
+        :isActive="cropBox.aspectRatio === staticData.ASPECT_RATIO_1x1"
+        :text="'1x1'"
       />
       <CropIcon
         @click="runCropper(staticData.ASPECT_RATIO_16x9)"
         :isActive="cropBox.aspectRatio === staticData.ASPECT_RATIO_16x9"
         :text="'16x9'"
       />
+      <CropIcon
+        @click="runCropper(staticData.ASPECT_RATIO_4x3)"
+        :isActive="cropBox.aspectRatio === staticData.ASPECT_RATIO_4x3"
+        :text="'4x3'"
+      />
+      <button @click="clearCropBox">clear cropper</button>
+      <button @click="disableCropBox">disable cropper</button>
       <button @click="cropImage" class="save-btn">SAVE</button>
     </div>
   </div>
