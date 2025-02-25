@@ -7,6 +7,8 @@ import ImageCropper from "./ImageCropper.vue";
 import Close from "./ui/Close.vue";
 import Edit from "./ui/Edit.vue";
 
+const IMG_BLOB_DATA = "https://i.imgur.com/2aU9QfI.jpeg";
+
 export default {
   components: {
     DropArea,
@@ -98,6 +100,18 @@ export default {
         id: uuidv4(),
         src: "https://static.vecteezy.com/system/resources/previews/012/168/187/large_2x/beautiful-sunset-on-the-beach-with-palm-tree-for-travel-and-vacation-free-photo.JPG",
       });
+      fetch(IMG_BLOB_DATA)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const mockBlogImg = URL.createObjectURL(blob);
+          this.images.push({
+            id: uuidv4(),
+            src: mockBlogImg,
+          });
+        })
+        .catch((error) => {
+          console.error("blob img receiving error:", error);
+        });
     },
 
     updateImage(id, newSrc) {
@@ -152,7 +166,7 @@ export default {
 <template>
   <div>
     <button @click="loadMockImages">load mock images</button>
-    <br>
+    <br />
 
     <div class="upload-container">
       <div v-if="imagesCouldBeAdded" class="upload-header">
