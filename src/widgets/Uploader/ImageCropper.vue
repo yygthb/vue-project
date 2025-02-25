@@ -30,6 +30,7 @@ export default {
 
   data() {
     return {
+      imgData: null,
       cropper: null,
       originalImgUrl: "",
       rotate: 0,
@@ -64,6 +65,9 @@ export default {
 
   methods: {
     initCropper() {
+      if (this.cropper) {
+        this.cropper.destroy();
+      }
       this.cropper = new Cropper(this.$refs.image, {
         viewMode: 1,
         responsive: true,
@@ -129,7 +133,6 @@ export default {
       }
       this.cropper.rotate(deg);
 
-      // this.fitCropBoxToImage();
       this.handleScaleImg();
       this.disableCropBox();
     },
@@ -165,13 +168,31 @@ export default {
       }
     },
 
-    logCropper() {
-      const containerData = this.cropper.getContainerData();
-      containerData.aspectRatio = containerData.width / containerData.height;
-      console.log("containerData: ", containerData);
+    cropImage() {
+      const { width, height } = this.cropper.getCropBoxData();
+      if (width && height) {
+        const canvas = this.cropper.getCroppedCanvas();
+        const dataURL = canvas.toDataURL();
+        this.cropper.replace(dataURL);
+        this.clearCropBox();
+      } else {
+        this.clearCropBox();
+      }
+    },
 
-      const imgData = this.cropper.getImageData();
-      console.log("imgData: ", imgData);
+    resetImage() {
+      this.enableCropBox();
+      this.cropper.replace(this.originalImgUrl);
+      this.disableCropBox();
+    },
+
+    saveImage() {
+      this.enableCropBox();
+      const canvas = this.cropper.getCroppedCanvas();
+      const dataURL = canvas.toDataURL();
+      this.originalImgUrl = dataURL;
+      this.$emit("cropImage", this.image.id, dataURL);
+      this.disableCropBox();
     },
   },
 
@@ -195,13 +216,11 @@ export default {
     </div>
     <div class="cropper-body">
       <div class="img-container">
-        <Loader :class="{ hidden: !isLoading }" />
         <p v-if="error" class="error">IMAGE LOADING ERROR</p>
         <img :src="image.src" ref="image" class="img hidden" />
       </div>
     </div>
     <div class="cropper-footer">
-      <!-- <button @click="logCropper">get cropper info</button> -->
       <CropIcon
         @click="runCropper(staticData.ASPECT_RATIO_FREE)"
         :isActive="cropBox.aspectRatio === staticData.ASPECT_RATIO_FREE"
@@ -222,10 +241,13 @@ export default {
         :isActive="cropBox.aspectRatio === staticData.ASPECT_RATIO_4x3"
         :text="'4x3'"
       />
-      <button @click="clearCropBox">clear cropper</button>
-      <button @click="disableCropBox">disable cropper</button>
-      <button @click="cropImage" class="save-btn">SAVE</button>
+      <button v-show="cropBox.isOpened" @click="cropImage" class="btn">
+        Crop
+      </button>
+      <button @click="resetImage" class="btn end">RESET CHANGES</button>
+      <button @click="saveImage" class="btn">SAVE CHANGES</button>
     </div>
+    <Loader :class="{ loader: true, hidden: !isLoading }" />
   </div>
 </template>
 
@@ -236,6 +258,7 @@ button {
 }
 
 .cropper {
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;
@@ -295,18 +318,20 @@ img {
 .cropper-footer {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 20px;
 }
 
-.save-btn {
-  margin-left: auto;
+.btn {
   cursor: pointer;
   background-color: transparent;
   border: 1px solid #333;
   border-radius: 5px;
   font-size: 16px;
   color: #333;
+
+  &.end {
+    margin-left: auto;
+  }
 
   &:hover {
     background-color: #57c757;
@@ -319,6 +344,14 @@ img {
   font-weight: 700;
   font-size: 22px;
   color: #f0a496;
+}
+
+.loader {
+  position: absolute;
+  z-index: 2;
+  top: calc(50% - 25px);
+  left: calc(50% - 25px);
+  transform: translate(-50%, -50%);
 }
 
 .hidden {

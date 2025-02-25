@@ -56,31 +56,6 @@ export default {
       <h4 class="section-title">{{ uploaderTitle }}</h4>
       <Uploader :isMultiple="true" :maxCount="22" />
     </div>
-
-    <!-- <hr />
-    <div>
-      <div class="section">
-        <h4 class="section-title">base64</h4>
-        <div>
-          <AppImage :src="base64Img" :alt="'Base64 Image'" />
-        </div>
-      </div>
-
-      <div class="section">
-        <h4 class="section-title">urlImg</h4>
-        <div>
-          <AppImage :src="urlImg" :alt="'Base64 Image'" />
-        </div>
-      </div>
-
-      <div v-if="blobImg" class="section">
-        <hr />
-        <h4 class="section-title">blob</h4>
-        <div>
-          <img :src="blobImg" alt="Blob Image" />
-        </div>
-      </div>
-    </div> -->
   </PageWrapper>
 </template>
 

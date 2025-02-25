@@ -24,7 +24,7 @@ export default {
 
     maxCount: {
       type: Number,
-      default: 10,
+      default: 100,
     },
   },
 
@@ -37,7 +37,7 @@ export default {
   },
 
   mounted() {
-    this.loadImages();
+    this.loadMockImages();
   },
 
   methods: {
@@ -86,7 +86,7 @@ export default {
       this.images = [];
     },
 
-    loadImages() {
+    loadMockImages() {
       const images_from_api = fetchImages();
       images_from_api.forEach((imgBase64) => {
         this.images.push({
@@ -98,6 +98,14 @@ export default {
         id: uuidv4(),
         src: "https://static.vecteezy.com/system/resources/previews/012/168/187/large_2x/beautiful-sunset-on-the-beach-with-palm-tree-for-travel-and-vacation-free-photo.JPG",
       });
+    },
+
+    updateImage(id, newSrc) {
+      const foundImage = this.images.find((img) => img.id === id);
+      if (foundImage) {
+        foundImage.src = newSrc;
+      }
+      this.isCropperModalOpen = false;
     },
   },
 
@@ -143,12 +151,13 @@ export default {
 
 <template>
   <div>
-    <button @click="loadImages">load images</button>
+    <button @click="loadMockImages">load mock images</button>
+    <br>
 
     <div class="upload-container">
       <div v-if="imagesCouldBeAdded" class="upload-header">
         <button>
-          <span>UPLOAD IMAGES</span>
+          <span>SELECT IMAGES</span>
           <input
             class="upload-btn"
             type="file"
@@ -199,7 +208,7 @@ export default {
       class="modal"
     >
       <template v-slot:modalBody>
-        <ImageCropper :image="selectedImg" />
+        <ImageCropper :image="selectedImg" @cropImage="updateImage" />
       </template>
     </Modal>
   </div>
